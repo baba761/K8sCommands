@@ -1,0 +1,214 @@
+	
+sudo su
+
+Now install docker
+
+sudo apt update && apt -y install docker.io
+
+--install Kubectl
+
+  curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl
+
+install Minikube
+1. First, download the latest Minikube binary using the wget command:
+	wget https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+2. Copy the downloaded file and store it into the /usr/local/bin/minikube directory with:
+	sudo cp minikube-linux-amd64 /usr/local/bin/minikube
+3. Next, give the file executive permission using the chmod command:
+	sudo chmod 755 /usr/local/bin/minikube
+4. Finally, verify you have successfully installed Minikube by checking the version of the software:
+	minikube version
+--
+apt install conntrack
+
+This command for local setup
+	sudo minikube start --vm-driver=none
+To Check minikube status
+	minikube status
+To get all nodes
+	Kubectl get nodes  
+apt
+ ***************************************************************************
+kind: Pod                              
+apiVersion: v1                     
+metadata:                           
+  name: testpod                  
+spec:                                    
+  containers:                      
+    - name: c00                     
+      image: ubuntu              
+      command: ["/bin/bash", "-c", "while true; do echo Hello-Bhupinder; sleep 5 ; done"]
+  restartPolicy: Never         # Defaults to Always
+
+To create a pod vai file 
+	kubectl apply -f pod1.yml
+
+To get all pod
+	kubectl get pod
+
+To get all detail of pod and check where my  pod is running
+	kubectl get pods -o wide
+To check container main kya chal rha hai 
+	kubectl logs -f <podname>
+agr 1 pod main 1 se jyada contanier chal rhe ho then kese check kare container main kya chal rha hai
+	kubectl logs -f <podname> -c <containerName>
+Delete a pod
+	kubectl delete pod podname
+
+************************************************************************************************************************************
+
+MULTI CONTAINER POD ENVIRONMENT 
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: testpod3
+spec:
+  containers:
+    - name: c00
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Technical-Guftgu; sleep 5 ; done"]
+    - name: c01
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Hello-Bhupinder; sleep 5 ; done"]
+
+
+*********************************************************************************************************************************
+POD ENVIRONMENT  VARIABLES
+
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: environments
+spec:
+  containers:
+    - name: c00
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Hello-Bhupinder; sleep 5 ; done"]
+      env:                        # List of environment variables to be used inside the pod
+      - name: MYNAME
+        value: BHUPINDER
+
+************************************************************************************************************************************
+POD WITH PORTS
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: testpod4
+spec:
+  containers:
+    - name: c00
+      image: httpd
+      ports:
+       - containerPort: 80  
+
+*********************END**************************************************
+
+
+******************YAML Files used in demo*************************
+
+EXAMPLE OF LABELS
+
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: delhipod
+  labels:                                                   
+    env: development
+    class: pods
+spec:
+    containers:
+       - name: c00
+         image: ubuntu
+         command: ["/bin/bash", "-c", "while true; do echo Hello-Bhupinder; sleep 5 ; done"]
+
+command for  get pod with the help of label 
+   Tosee all labels 
+	kubectl get pods --show-labels 
+To set label with with imperative method(=> in this  method commands execute one by one)
+	kubectl  label pods <podname> myname=rohit	
+Get pods with the help of labels
+	
+
+***************************************************************************
+NODE SELECTOR EXAMPLE
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: nodelabels
+  labels:
+    env: development
+spec:
+    containers:
+       - name: c00
+         image: ubuntu
+         command: ["/bin/bash", "-c", "while true; do echo Hello-Bhupinder; sleep 5 ; done"]
+    nodeSelector:                                         
+       hardware: t2-medium
+To put a label on node
+	kubectl label nodes ip-172-31-0-41 hardware=t2.medium
+To check label on nodes
+	kubectl describe pod <podname>
+
+
+*****************************************************************************************************
+EXAMPLE OF REPLICATION CONTROLLER
+
+kind: ReplicationController    #this define to create object of replication type.this is a kind of object                
+apiVersion: v1
+metadata:
+  name: myreplica
+spec:
+  replicas: 2            #this tells us number of required pods 
+  selector:        		#tells the controller which pods to watch/belong to this rc(replication ) 
+    myname: Bhupinder      #this must match the label                         
+  template:                #here we define template of new pod 
+    metadata:
+      name: testpod6
+      labels:            #selecter value need to match the label values specified in the pod template 
+        myname: Bhupinder	
+    spec:
+     containers:
+       - name: c00
+         image: ubuntu
+         command: ["/bin/bash", "-c", "while true; do echo Hello-Bhupinder; sleep 5 ; done"]
+
+To check status of replica
+	kubectl get rc 
+To get the detail of rc 
+	kubectl describe rc <name>
+To scale up and scale down the rc
+	kubectl scale --replicas=8 rc -l myname=rohit
+
+****************************************************************************************************************
+EXAMPLE OF REPLICA SET
+
+
+kind: ReplicaSet                                    
+apiVersion: apps/v1                            
+metadata:
+  name: myrs
+spec:
+  replicas: 2  
+  selector:                  
+    matchExpressions:                             # these must match the labels
+      - {key: myname, operator: In, values: [Bhupinder, Bupinder, Bhopendra]}
+      - {key: env, operator: NotIn, values: [production]}
+  template:      
+    metadata:
+      name: testpod7
+      labels:              
+        myname: Bhupinder
+    spec:
+     containers:
+       - name: c00
+         image: ubuntu
+         command: ["/bin/bash", "-c", "while true; do echo Technical-Guftgu; sleep 5 ; done"]
+To scale up and scale down of rs
+	kubectl scale --replicas=1 rs/<replicationsetname>
+
+***************************************END******************************

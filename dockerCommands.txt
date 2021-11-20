@@ -1,0 +1,97 @@
+command in Ubuntu 
+For update 
+	apt-get update
+Install apache2 server
+	apt-get install apache2
+
+*************************************************************************
+To see all images in local machine
+	docker images
+To find images on docker hub
+	docker search jenkins
+To download images from docker hub to lacal machine 
+	docker pull jenkins 
+To give name of the container 
+	docker run -it --name <containerName> <imagename> /bin/bash
+	it means(interactivemode terminal)
+To check service is or not 
+	service docker status
+To check service status 
+	service docker start
+To start conatiner
+	docker start <container>
+To go inside container
+	docker attach <container>
+To see all container
+	docker ps -a  (ps=>process status)
+To see running container 
+	docker ps 
+To stop container 
+	docker stop <container>
+To delete container 
+	docker rm <container>
+To see changes between base image and change file 
+	docker diff <containername> 
+Now create a image of this container 
+	docker commit <containername> <newimagename>
+To create a container with new image 
+	docker run -it --name <containername> <imagename> /bin/bash
+To create image from docker file 
+	docker build -t <imagename> .  #This . is very important
+How to create volume in docker file 
+{
+	FROM ubuntu
+	VOLUME ["/myvolume1"]
+}
+share volume b/w container to container
+	docker build -t myimg .
+create container from image 
+	docker run -it --name container1 myimg /bin/bash  #this is first container
+create second container which share volume of container one
+	docker run -it --name container2 --privileged=true --volumes-from container1 ubuntu /bin/bash
+Now try to create volume by interactve command when create a container
+	docker run -it --name container3 -v /volume2 ubuntu /bin/bash
+Now share this container3 volume with container4
+	docker run -it --name container4 --privileged=true --volume-from container3 ubuntu /bin/bash
+Now share volume b/w host and container 
+	docker run -it --name <containername> -v /home/ec2-user:/rohit --privilged=true ubuntu /bin/bash
+To list of all volume 
+	docker volume ls 
+Create Volume
+	docker volume create <name>
+delete volume 
+	docker volume rm <name>
+Delete all unused volume 
+	docker volume prune
+All details about volume 
+	docker volume inspect <name>
+all details about container
+	docker container inspect <name>
+****************************************************************************
+Push docker image on docker hub
+First Login into docker
+	docker login
+Now give a tag to your image
+	docker tag <name> docerid/<newimage>(jo naam yha dete hai usi nam se najar aati hai docker hub main)
+Now push this image to hub
+	docker push dockerid/<newimage>
+Now pull image form docker hub
+	docker pull dockerid/<name>
+
+******************************************************************************
+Expose port in docker container
+	docker run -td --name techserver -p 80:80 ubuntu 
+To check port of container
+	docker port <name>
+Another command to enter in a container 
+	docker exec -it <name>  /bin/bash
+update all package
+	apt-get update 
+Now  install apache2 server
+	apt-get install apache2 
+Start apache service
+
+
+
+	
+
