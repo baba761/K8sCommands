@@ -1,4 +1,4 @@
-	
+**********************************Install minikube in Ubuntu********************************	
 sudo su
 
 Now install docker
@@ -26,7 +26,7 @@ This command for local setup
 To Check minikube status
 	minikube status
 To get all nodes
-	Kubectl get nodes  
+	kubectl get nodes
 apt
  ***************************************************************************
 kind: Pod                              

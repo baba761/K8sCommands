@@ -1,0 +1,52 @@
+*********************************Deployment Object ***********************************
+In ubuntu instance 
+	=>sudo su
+	=>sudo apt update && apt -y install docker.io
+Install minicube and kubectl
+	=>apt install conntrack
+To check deoloyement obeject created or not
+	=>kubectl get deploye
+To check how deployement create rs and pods 
+	=>kubectl describe deploye <deployement name in yaml file>
+To get information about replicaset
+	=>kubectl get rs
+To scale up and scale down replica
+	=>kubectl scale --replica=1 deploye <deployementname>
+To check what is running inside container
+	=>kubectl logs -f <podname>
+To check current status of rollout	
+	=>kubectl rollout status deployment <deployment name>
+To check history how many times rollout
+	=>kubectl rollout history deployment <deployment name>
+To go on a specific version 
+	=>kubectl rollout undo deploye/<deploymentname>
+To create a yml file
+	=>vi mydeploy.yml
+To make pods
+	=>kubectl apply -f mydeploy.yml
+To delete a pod
+	=>kubectl delete pod <podname>
+
+
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+   name: mydeployments
+spec:
+   replicas: 2
+   selector:     
+    matchLabels:
+     name: deployment
+   template:
+     metadata:
+       name: testpod
+       labels:
+         name: deployment
+     spec:
+      containers:
+        - name: c00
+          image: ubuntu
+          command: ["/bin/bash", "-c", "while true; do echo Technical-Guftgu; sleep 5; done"]
+
+
